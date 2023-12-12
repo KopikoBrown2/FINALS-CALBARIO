@@ -1,0 +1,859 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading;
+
+public interface IBookCategory
+{
+    void DisplayBooks();
+    void ReserveBook(int bookNumber, string returnDate);
+    string GetBookTitle(int bookNumber);
+}
+
+public abstract class BookReservation
+{
+    protected string BookTitle;
+    protected int AvailableQuantity;
+
+    protected BookReservation(string bookTitle, int availableQuantity)
+    {
+        BookTitle = bookTitle;
+        AvailableQuantity = availableQuantity;
+    }
+
+    public abstract string GetExpectedReturnDate(string returnDuration);
+}
+
+public class English : IBookCategory
+{
+    private readonly Dictionary<string, int> _bookQuantities = new Dictionary<string, int>
+    {
+        { "Don Quixote", 10 },
+        { "Alice's Adventures in Wonderland", 10 },
+        { "The Adventures of Huckleberry Finn", 10 },
+        { "The Adventures of Tom Sawyer", 10 },
+        { "Treasure Island", 10 },
+        { "Pride and Prejudice", 10 },
+        { "Wuthering Heights", 10 },
+        { "Jane Eyre", 10 },
+        { "Moby Dick", 10 },
+        { "The Scarlet Letter", 10 }
+    };
+
+    public void DisplayBooks()
+    {
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.Write("Selecting Books ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.Write(" - ");
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.Write("English Category");
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("\n------------------------------------");
+        Console.ForegroundColor = ConsoleColor.White;
+        foreach (var book in _bookQuantities.Keys)
+        {
+            Console.WriteLine($"{_bookQuantities.Keys.ToList().IndexOf(book) + 1}. {book} ({_bookQuantities[book]} left)");
+        }
+
+        Console.WriteLine($"{_bookQuantities.Count + 1}. Back");
+    }
+
+    public void ReserveBook(int bookNumber, string returnDate)
+    {
+        if (bookNumber >= 1 && bookNumber <= _bookQuantities.Count)
+        {
+            var bookTitle = _bookQuantities.Keys.ElementAt(bookNumber - 1);
+            if (_bookQuantities[bookTitle] > 0)
+            {
+                var reservation = new EnglishBookReservation(bookTitle, _bookQuantities[bookTitle]);
+                try
+                {
+                    var expectedReturnDate = reservation.GetExpectedReturnDate(returnDate);
+                    Console.WriteLine($"Book {bookTitle} reserved successfully! Remaining: {--_bookQuantities[bookTitle]} left");
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine($"Error: ops ops");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Sorry, {bookTitle} is currently not available.");
+            }
+        }
+    }
+
+    public string GetBookTitle(int bookNumber)
+    {
+        if (bookNumber >= 1 && bookNumber <= _bookQuantities.Count)
+        {
+            return _bookQuantities.Keys.ElementAt(bookNumber - 1);
+        }
+        return null;
+    }
+}
+
+public class Math : IBookCategory
+{
+    private readonly Dictionary<string, int> _bookQuantities = new Dictionary<string, int>
+    {
+        { "Basic Math", 10 },
+        { "Calculus", 10 },
+        { "Integral", 10 },
+        { "Derivative", 10 },
+        { "Limits", 10 },
+        { "Algebra", 10 },
+        { "Geometry", 10 },
+        { "Arithmetic", 10 },
+        { "Quadratic", 10 },
+        { "Trigonometry", 10 }
+    };
+
+    public void DisplayBooks()
+    {
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.Write("Selecting Books ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.Write(" - ");
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.Write("Math Category");
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("\n------------------------------------");
+        Console.ForegroundColor = ConsoleColor.White;
+
+        foreach (var book in _bookQuantities.Keys)
+        {
+            Console.WriteLine($"{_bookQuantities.Keys.ToList().IndexOf(book) + 1}. {book} ({_bookQuantities[book]} left)");
+        }
+
+        Console.WriteLine($"{_bookQuantities.Count + 1}. Back");
+    }
+
+    public void ReserveBook(int bookNumber, string returnDate)
+    {
+        if (bookNumber >= 1 && bookNumber <= _bookQuantities.Count)
+        {
+            var bookTitle = _bookQuantities.Keys.ElementAt(bookNumber - 1);
+            if (_bookQuantities[bookTitle] > 0)
+            {
+                var reservation = new MathBookReservation(bookTitle, _bookQuantities[bookTitle]);
+                try
+                {
+                    var expectedReturnDate = reservation.GetExpectedReturnDate(returnDate);
+                    Console.WriteLine($"Book {bookTitle} reserved successfully! Remaining: {--_bookQuantities[bookTitle]} left");
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine($"Error:ops ops");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Sorry, {bookTitle} is currently not available.");
+            }
+        }
+    }
+
+    public string GetBookTitle(int bookNumber)
+    {
+        if (bookNumber >= 1 && bookNumber <= _bookQuantities.Count)
+        {
+            return _bookQuantities.Keys.ElementAt(bookNumber - 1);
+        }
+        return null;
+    }
+}
+
+
+public class Science : IBookCategory
+{
+    private readonly Dictionary<string, int> _bookQuantities = new Dictionary<string, int>
+    {
+        { "Analytical Chemistry", 10 },
+        { "Biochemistry", 10 },
+        { "Biology", 10 },
+        { "Chemical Engineering", 10 },
+        { "Chemistry", 10 },
+        { "Chemical Physics", 10 },
+        { "Computer Science", 10 },
+        { "Forensic Analysis", 10 },
+        { "Food Technology", 10 },
+        { "Genetics", 10 }
+    };
+
+    public void DisplayBooks()
+    {
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.Write("Selecting Books ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.Write(" - ");
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.Write("Science Category");
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("\n------------------------------------");
+        Console.ForegroundColor = ConsoleColor.White;
+
+        foreach (var book in _bookQuantities.Keys)
+        {
+            Console.WriteLine($"{_bookQuantities.Keys.ToList().IndexOf(book) + 1}. {book} ({_bookQuantities[book]} left)");
+        }
+
+        Console.WriteLine($"{_bookQuantities.Count + 1}. Back");
+    }
+
+    public void ReserveBook(int bookNumber, string returnDate)
+    {
+        if (bookNumber >= 1 && bookNumber <= _bookQuantities.Count)
+        {
+            var bookTitle = _bookQuantities.Keys.ElementAt(bookNumber - 1);
+            if (_bookQuantities[bookTitle] > 0)
+            {
+                var reservation = new ScienceBookReservation(bookTitle, _bookQuantities[bookTitle]);
+                try
+                {
+                    var expectedReturnDate = reservation.GetExpectedReturnDate(returnDate);
+                    Console.WriteLine($"Book {bookTitle} reserved successfully! Remaining: {--_bookQuantities[bookTitle]} left");
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine($"Error: ops ops");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Sorry, {bookTitle} is currently not available.");
+            }
+        }
+    }
+
+    public string GetBookTitle(int bookNumber)
+    {
+        if (bookNumber >= 1 && bookNumber <= _bookQuantities.Count)
+        {
+            return _bookQuantities.Keys.ElementAt(bookNumber - 1);
+        }
+        return null;
+    }
+}
+
+public class SocialScience : IBookCategory
+{
+    private readonly Dictionary<string, int> _bookQuantities = new Dictionary<string, int>
+    {
+        { "The Growth Leader", 10 },
+        { "Doppelganger", 10 },
+        { "Man's Search for Meaning", 10 },
+        { "Goth: A History", 10 },
+        { "The Portable Jung", 10 },
+        { "Freud readers", 10 },
+        { "Braiding Sweetgrass", 10 },
+        { "Five Days in November", 10 },
+        { "The Black Swan", 10 },
+        { "Talking to Strangers", 10 }
+    };
+
+    public void DisplayBooks()
+    {
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.Write("Selecting Books ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.Write(" - ");
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.Write("Social Science Category");
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("\n------------------------------------");
+        Console.ForegroundColor = ConsoleColor.White;
+
+        foreach (var book in _bookQuantities.Keys)
+        {
+            Console.WriteLine($"{_bookQuantities.Keys.ToList().IndexOf(book) + 1}. {book} ({_bookQuantities[book]} left)");
+        }
+
+        Console.WriteLine($"{_bookQuantities.Count + 1}. Back");
+    }
+
+    public void ReserveBook(int bookNumber, string returnDate)
+    {
+        if (bookNumber >= 1 && bookNumber <= _bookQuantities.Count)
+        {
+            var bookTitle = _bookQuantities.Keys.ElementAt(bookNumber - 1);
+            if (_bookQuantities[bookTitle] > 0)
+            {
+                var reservation = new SocialScienceBookReservation(bookTitle, _bookQuantities[bookTitle]);
+                try
+                {
+                    var expectedReturnDate = reservation.GetExpectedReturnDate(returnDate);
+                    Console.WriteLine($"Book {bookTitle} reserved successfully! Remaining: {--_bookQuantities[bookTitle]} left");
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine($"Error: ops ops");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Sorry, {bookTitle} is currently not available.");
+            }
+        }
+    }
+
+    public string GetBookTitle(int bookNumber)
+    {
+        if (bookNumber >= 1 && bookNumber <= _bookQuantities.Count)
+        {
+            return _bookQuantities.Keys.ElementAt(bookNumber - 1);
+        }
+        return null;
+    }
+}
+public class Religion : IBookCategory
+{
+    private readonly Dictionary<string, int> _bookQuantities = new Dictionary<string, int>
+    {
+        { "Zealot: The Life and Times of Jesus of Nazareth", 10 },
+        { "The Varieties of Religious Experience", 10 },
+        { "The Protestant Ethic and the Spirit of Capitalism", 10 },
+        { "God: A Biography", 10 },
+        { "Killing Jesus: A History", 10 },
+        { "God and Sex: What the Bible Really Says", 10 },
+        { "No God but God: The Origins, Evolution, and Future of Islam", 10 },
+        { "“The Will to Believe”r", 10 },
+        { "The Phenomenology of Spirit", 10 },
+        { "The Elementary Forms of Religious Life", 10 }
+    };
+
+    public void DisplayBooks()
+    {
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.Write("Selecting Books ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.Write(" - ");
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.Write("Relegion Category");
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("\n------------------------------------");
+        Console.ForegroundColor = ConsoleColor.White;
+
+        foreach (var book in _bookQuantities.Keys)
+        {
+            Console.WriteLine($"{_bookQuantities.Keys.ToList().IndexOf(book) + 1}. {book} ({_bookQuantities[book]} left)");
+        }
+
+        Console.WriteLine($"{_bookQuantities.Count + 1}. Back");
+    }
+
+    public void ReserveBook(int bookNumber, string returnDate)
+    {
+        if (bookNumber >= 1 && bookNumber <= _bookQuantities.Count)
+        {
+            var bookTitle = _bookQuantities.Keys.ElementAt(bookNumber - 1);
+            if (_bookQuantities[bookTitle] > 0)
+            {
+                var reservation = new ReligionBookReservation(bookTitle, _bookQuantities[bookTitle]);
+                try
+                {
+                    var expectedReturnDate = reservation.GetExpectedReturnDate(returnDate);
+                    Console.WriteLine($"Book {bookTitle} reserved successfully! Remaining: {--_bookQuantities[bookTitle]} left");
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine($"Error: ops ops");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Sorry, {bookTitle} is currently not available.");
+            }
+        }
+    }
+
+    public string GetBookTitle(int bookNumber)
+    {
+        if (bookNumber >= 1 && bookNumber <= _bookQuantities.Count)
+        {
+            return _bookQuantities.Keys.ElementAt(bookNumber - 1);
+        }
+        return null;
+    }
+}
+
+
+public class MathBookReservation : BookReservation
+{
+    public MathBookReservation(string bookTitle, int availableQuantity) : base(bookTitle, availableQuantity)
+    {
+    }
+
+    public override string GetExpectedReturnDate(string returnDuration)
+    {
+        if (DateTime.TryParseExact(returnDuration, "yyyy-MM-dd", null, DateTimeStyles.None, out var returnDate))
+        {
+            var expectedReturnDate = returnDate.AddDays(31);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"Expected return day: {expectedReturnDate:yyyy-MM-dd}.");
+            Console.ResetColor();
+
+            return expectedReturnDate.ToString("yyyy-MM-dd");
+
+        }
+
+        throw new ArgumentException("Invalid date format for return duration. Please enter the date in yyyy-MM-dd format.");
+    }
+}
+
+public class ScienceBookReservation : BookReservation
+{
+    public ScienceBookReservation(string bookTitle, int availableQuantity) : base(bookTitle, availableQuantity)
+    {
+    }
+
+    public override string GetExpectedReturnDate(string returnDuration)
+    {
+        if (DateTime.TryParseExact(returnDuration, "yyyy-MM-dd", null, DateTimeStyles.None, out var returnDate))
+        {
+            var expectedReturnDate = returnDate.AddDays(31);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"Expected return day: {expectedReturnDate:yyyy-MM-dd}.");
+            Console.ResetColor();
+
+            return expectedReturnDate.ToString("yyyy-MM-dd");
+        }
+
+        throw new ArgumentException("Invalid date format for return duration. Please enter the date in yyyy-MM-dd format.");
+    }
+}
+public class EnglishBookReservation : BookReservation
+{
+    public EnglishBookReservation(string bookTitle, int availableQuantity) : base(bookTitle, availableQuantity)
+    {
+    }
+
+    public override string GetExpectedReturnDate(string returnDuration)
+    {
+        if (DateTime.TryParseExact(returnDuration, "yyyy-MM-dd", null, DateTimeStyles.None, out var returnDate))
+        {
+            var expectedReturnDate = returnDate.AddDays(31);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"Expected return day: {expectedReturnDate:yyyy-MM-dd}.");
+            Console.ResetColor();
+
+            return expectedReturnDate.ToString("yyyy-MM-dd");
+        }
+
+        throw new ArgumentException("Invalid date format for return duration. Please enter the date in yyyy-MM-dd format.");
+    }
+}
+public class SocialScienceBookReservation : BookReservation
+{
+    public SocialScienceBookReservation(string bookTitle, int availableQuantity) : base(bookTitle, availableQuantity)
+    {
+    }
+
+    public override string GetExpectedReturnDate(string returnDuration)
+    {
+        if (DateTime.TryParseExact(returnDuration, "yyyy-MM-dd", null, DateTimeStyles.None, out var returnDate))
+        {
+            var expectedReturnDate = returnDate.AddDays(31);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"Expected return day: {expectedReturnDate:yyyy-MM-dd}.");
+            Console.ResetColor();
+            return expectedReturnDate.ToString("yyyy-MM-dd");
+
+        }
+
+        throw new ArgumentException("Invalid date format for return duration. Please enter the date in yyyy-MM-dd format.");
+    }
+}
+public class ReligionBookReservation : BookReservation
+{
+    public ReligionBookReservation(string bookTitle, int availableQuantity) : base(bookTitle, availableQuantity)
+    {
+    }
+
+    public override string GetExpectedReturnDate(string returnDuration)
+    {
+        if (DateTime.TryParseExact(returnDuration, "yyyy-MM-dd", null, DateTimeStyles.None, out var returnDate))
+        {
+            var expectedReturnDate = returnDate.AddDays(31);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"Expected return day: {expectedReturnDate:yyyy-MM-dd}.");
+            Console.ResetColor();
+
+            return expectedReturnDate.ToString("yyyy-MM-dd");
+        }
+
+        throw new ArgumentException("Invalid date format for return duration. Please enter the date in yyyy-MM-dd format.");
+    }
+}
+public class Opening
+
+{
+
+    public string TextArt { get; } = "=========================================================================================================================================================================";
+
+    public string TextArtTitle { get; } = @"     
+
+ ";
+    public string TextArtFooter { get; } = "=======================================================================================================================================================================";
+}
+
+
+public class openopen
+
+{
+
+    public string Up { get; } = "=================================================================================================================================";
+
+    public string Middle { get; } = @"
+
+
+ 
+                                                                                                            
+ ";
+    public string Bottom { get; } = "============================================================================================================================";
+}
+
+public class Program
+{
+
+    private static int categoryNumber;
+    private static bool continueProgram = true;
+    private const string FilePath = "FINALSPORJ.txt";
+
+    static void SaveToFile(string category, string selectedBook, string dateToGetBook, string expectedReturnDate, string authenticationCode, string userId, string First)
+    {
+        try
+        {
+            string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string filePath = Path.Combine(documentsPath, "FINALSPROJ.txt");
+
+            using (StreamWriter writer = new StreamWriter(filePath, true))
+            {
+                writer.WriteLine("------------------------------------------------------------------");
+                writer.WriteLine($"●User Id: {userId}                                               ");
+                writer.WriteLine($"●First Name: {First}                                             ");
+                writer.WriteLine("------------------------------------------------------------------");
+                writer.WriteLine($"●Selected Category: {category}                                   ");
+                writer.WriteLine($"●Selected Book: {selectedBook}                                   ");
+                writer.WriteLine($"●Day to use the book: {dateToGetBook}                            ");
+                writer.WriteLine($"●Expected return day: {expectedReturnDate}                       ");
+                writer.WriteLine($"●Authentication Code: {authenticationCode}                       ");
+                writer.WriteLine("------------------------------------------------------------------");
+                writer.WriteLine("");           
+            }
+
+
+        }
+        catch (Exception)
+        {
+            Console.WriteLine("Error during Saving the File");
+        }
+    }
+    static string DisplayGeneralTermsAndConditions()
+    {
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine("\nTerms and Conditions:");
+
+        string[] termsAndConditions = new string[]
+        {
+            "1.  The Students agrees to return the book within 31 days from the date of checkout.",
+            "2.  Failure to return the book on time may result in a suspension of borrowing privileges or can't reserve a book for 1 month.",
+            "3.  The borrower is responsible for the condition of the book and will be charged for any damages.",
+            "4.  If possible each Student can reserve one book of each books at a time.",
+            "5.  Students must present a valid student ID when checking out a book.",
+            "6. Students are not allowed to write or mark in the books.",
+            "7.  Students should report any damage or missing pages immediately upon return.",
+            "8.  Lost books must be reported to the librarian, and a replacement fee will be charged.",
+            "9.  Borrowers are responsible for checking the book for existing damages before borrowing.",
+            "10. Food and drinks are not allowed in the library when getting the book.",
+            "11. Students are expected to adhere to the library's code of conduct.",
+            "12. Students are encouraged to use bookmarks instead of folding book pages.",
+            "13. Students are encouraged to return books in the same condition as they were borrowed.",
+            "14. Students are responsible for keeping track of their due dates.",
+            "15. Library is open to 8:00 A.M. TO 6:00 P.M. .",
+            "16. library is not open on Weekends.",
+            "17. Students must return books during library operating hours."
+
+        };
+
+        foreach (var condition in termsAndConditions)
+        {
+            Console.WriteLine(condition);
+        }
+
+        Console.WriteLine("----------------------------------------------------------------------");
+
+        return "";
+    }
+
+    static string DisplaySplitTransition(string First)
+    {
+
+        for (int i = 0; i < 20; i++)
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.White;
+
+            string splitEffect = new string('█', i) + new string(' ', 20 - i);
+
+            Console.WriteLine($"Hello, {First}");
+            Console.WriteLine(splitEffect);
+            Console.WriteLine("Lets Proceed to the Book Category");
+
+            Thread.Sleep(100);
+        }
+
+        Console.Clear();
+        Console.ForegroundColor = ConsoleColor.Green;
+        return "aaaa";
+    }
+
+
+    static void Main(string[] args)
+    {
+        List<string> userInputs = new List<string>();
+        IBookCategory selectedCategory = null;
+        string dateToGetBook = null;
+        string authenticationCode = GenerateAuthenticationCode();
+        DateTime expectedReturnDate = DateTime.MinValue;
+
+        var englishBookCategory = new English();
+        var mathBookCategory = new Math();
+        var scienceBookCategory = new Science();
+        var socialscienceBookCategory = new SocialScience();
+        var ReligionBookCategory = new Religion();
+        int bookNumber = 0;
+
+        Console.Clear();
+        openopen openopen = new openopen();
+        Console.WriteLine(openopen.Up);
+        Console.WriteLine(openopen.Middle);
+        Console.WriteLine(openopen.Bottom);
+
+        Console.ForegroundColor = ConsoleColor.DarkGreen;
+        Console.WriteLine("-------------------------------------------------------------------------------------------------------------------------------------");
+        Console.WriteLine("|Note: If your ID number and your Full Name are incorrect when you visit the librarian, you will not be able to check out the book.|");
+        Console.WriteLine("-------------------------------------------------------------------------------------------------------------------------------------");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.Write("Student Id Number: ");
+        string userId = Console.ReadLine();
+        ;
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            throw new ArgumentException("User ID cannot be empty or whitespace.");
+        }
+        Console.Write("Full Name:  ");
+        string First = Console.ReadLine();
+        Console.Clear();
+        Console.WriteLine(DisplayGeneralTermsAndConditions());
+
+        Console.Write("Do you agree to the terms and conditions? (yes/no): ");
+        string agreeInput = Console.ReadLine().ToLower();
+
+        if (agreeInput == "yes")
+        {
+            Console.WriteLine("Great! Let's proceed with the program.\n");
+        }
+        else
+        {
+            Console.WriteLine("Exiting the Library...");
+            return;
+        }
+        Console.WriteLine(DisplaySplitTransition(First));
+
+
+        while (continueProgram)
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+
+            Console.Clear();
+            Opening open2 = new Opening();
+            Console.WriteLine(open2.TextArt);
+            Console.WriteLine(open2.TextArtTitle);
+            Console.WriteLine(open2.TextArtFooter);
+            Console.ForegroundColor = ConsoleColor.Gray;
+            int boxWidth = 67;
+            int leftPadding = (boxWidth - "BookCategory".Length) / 2;
+            int rightPadding = boxWidth - "BookCategory".Length - leftPadding;
+
+            Console.WriteLine(new string('=', 40) + "=" + new string('=', 27));
+            Console.WriteLine("|" + new string(' ', leftPadding) + "BookCategory" + new string(' ', rightPadding) + "|");
+            Console.WriteLine(new string('=', 40) + "=" + new string('=', 27));
+
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("Select Category:\n1. English\n2. Math\n3. Science\n4. Social Science\n5. Religion \n6. Exit");
+
+            Console.Write("Enter a number: ");
+            var input = Console.ReadLine();
+
+            if (input == "6")
+            {
+                Console.Write("Do you want to exit? (yes/no): ");
+                string exitChoice = Console.ReadLine().ToLower();
+
+                if (exitChoice == "yes")
+                {
+                    Console.WriteLine("Exiting the program...");
+                    return;
+                }
+                else if (exitChoice == "no")
+                {
+                    continue;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid choice. Returning to category selection.");
+                    continue;
+                }
+            }
+
+            if (int.TryParse(input, out categoryNumber))
+            {
+                switch (categoryNumber)
+                {
+                    case 1:
+                        selectedCategory = englishBookCategory;
+                        break;
+                    case 2:
+                        selectedCategory = mathBookCategory;
+                        break;
+                    case 3:
+                        selectedCategory = scienceBookCategory;
+                        break;
+                    case 4:
+                        selectedCategory = socialscienceBookCategory;
+                        break;
+                    case 5:
+                        selectedCategory = ReligionBookCategory;
+                        break;
+                    case 11:
+                        break;
+                    default:
+                        Console.WriteLine("Invalid category number. Please try again.");
+                        continue;
+                }
+
+                do
+                {
+                    if (categoryNumber != 11)
+                    {
+                        selectedCategory.DisplayBooks();
+                    }
+
+                    Console.Write("Select a number: ");
+                    var bookNumberInput = Console.ReadLine();
+
+                    if (int.TryParse(bookNumberInput, out bookNumber))
+                    {
+                        if (bookNumber >= 12)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Invalid book number. Please enter a number between 1 and 11.");
+                            Console.WriteLine("");
+                            continue;
+                        }
+                        if (bookNumber == 11)
+                        {
+                            break;
+                        }
+
+                        do
+                        {
+
+                            Console.Write("Date to get the book (yyyy-MM-dd): ");
+                            dateToGetBook = Console.ReadLine();
+
+                            if (!DateTime.TryParseExact(dateToGetBook, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
+                            {
+                                Console.WriteLine("Invalid date format. Please follow the date format.");
+                            }
+                            else
+                            {
+                                expectedReturnDate = DateTime.ParseExact(dateToGetBook, "yyyy-MM-dd", CultureInfo.InvariantCulture).AddDays(31);
+
+
+                                Console.ResetColor();
+                                break;
+                            }
+
+                        } while (true);
+
+                        try
+                        {
+                            selectedCategory.ReserveBook(bookNumber, dateToGetBook);
+                            SaveToFile(categoryNumber.ToString(), selectedCategory.GetBookTitle(bookNumber), dateToGetBook, expectedReturnDate.ToString("yyyy-MM-dd"), authenticationCode, userId, First);
+                        }
+                        catch (Exception)
+                        {
+                            Console.WriteLine("Error");
+                        }
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write("'yes' ");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.Write("if you want to select another book or");
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write(" 'no' ");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.Write("to exit.");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.Write("(");
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write("yes");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.Write("/");
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write("no");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.Write(")");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.Write("?");
+
+                        if (Console.ReadLine()?.ToLower() == "no")
+                        {
+
+                            DisplayAuthenticationCode(authenticationCode);
+                            Console.WriteLine("Exiting the Online Library (Reservation)...");
+                            string exitChoice = Console.ReadLine().ToLower();
+                            continueProgram = exitChoice == "no";
+                            break;
+                        }
+
+                    }
+                } while (true);
+            }
+
+        }
+    }
+
+    static string GenerateAuthenticationCode()
+    {
+        string uniqueData = $"{DateTime.Now.Ticks}-{Guid.NewGuid()}";
+        string authenticationCode;
+
+        using (SHA256 sha256 = SHA256.Create())
+        {
+            byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(uniqueData));
+            authenticationCode = BitConverter.ToString(hashBytes).Replace("-", "").Substring(0, 8);
+        }
+
+        return authenticationCode;
+    }
+
+    private static void DisplayAuthenticationCode(string authenticationCode)
+    {
+
+        Console.WriteLine("----------------------------------------------------------------------");
+        Console.WriteLine(" |                         Authentication Code:                      |");
+        Console.WriteLine("----------------------------------------------------------------------");
+        Console.WriteLine($"|{authenticationCode?.PadLeft(40) ?? "N/A"}                            |");
+        Console.WriteLine("----------------------------------------------------------------------");
+        Console.WriteLine($"| Note: take a Screenshot/Picture of this for proof of your Reservation|");
+        Console.WriteLine("----------------------------------------------------------------------");
+    }
+}
