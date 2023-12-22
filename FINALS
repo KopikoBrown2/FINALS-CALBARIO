@@ -169,7 +169,6 @@ public class Math : IBookCategory
     }
 }
 
-
 public class Science : IBookCategory
 {
     private readonly Dictionary<string, int> _bookQuantities = new Dictionary<string, int>
@@ -240,7 +239,6 @@ public class Science : IBookCategory
         return null;
     }
 }
-
 public class SocialScience : IBookCategory
 {
     private readonly Dictionary<string, int> _bookQuantities = new Dictionary<string, int>
@@ -334,7 +332,7 @@ public class Religion : IBookCategory
         Console.ForegroundColor = ConsoleColor.White;
         Console.Write(" - ");
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.Write("Relegion Category");
+        Console.Write("Religion Category");
         Console.ForegroundColor = ConsoleColor.Red;
         Console.WriteLine("\n------------------------------------");
         Console.ForegroundColor = ConsoleColor.White;
@@ -382,7 +380,6 @@ public class Religion : IBookCategory
     }
 }
 
-
 public class MathBookReservation : BookReservation
 {
     public MathBookReservation(string bookTitle, int availableQuantity) : base(bookTitle, availableQuantity)
@@ -394,12 +391,8 @@ public class MathBookReservation : BookReservation
         if (DateTime.TryParseExact(returnDuration, "yyyy-MM-dd", null, DateTimeStyles.None, out var returnDate))
         {
             var expectedReturnDate = returnDate.AddDays(31);
-            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine($"Expected return day: {expectedReturnDate:yyyy-MM-dd}.");
-            Console.ResetColor();
-
             return expectedReturnDate.ToString("yyyy-MM-dd");
-
         }
 
         throw new ArgumentException("Invalid date format for return duration. Please enter the date in yyyy-MM-dd format.");
@@ -417,16 +410,14 @@ public class ScienceBookReservation : BookReservation
         if (DateTime.TryParseExact(returnDuration, "yyyy-MM-dd", null, DateTimeStyles.None, out var returnDate))
         {
             var expectedReturnDate = returnDate.AddDays(31);
-            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine($"Expected return day: {expectedReturnDate:yyyy-MM-dd}.");
-            Console.ResetColor();
-
             return expectedReturnDate.ToString("yyyy-MM-dd");
         }
 
         throw new ArgumentException("Invalid date format for return duration. Please enter the date in yyyy-MM-dd format.");
     }
 }
+
 public class EnglishBookReservation : BookReservation
 {
     public EnglishBookReservation(string bookTitle, int availableQuantity) : base(bookTitle, availableQuantity)
@@ -438,10 +429,7 @@ public class EnglishBookReservation : BookReservation
         if (DateTime.TryParseExact(returnDuration, "yyyy-MM-dd", null, DateTimeStyles.None, out var returnDate))
         {
             var expectedReturnDate = returnDate.AddDays(31);
-            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine($"Expected return day: {expectedReturnDate:yyyy-MM-dd}.");
-            Console.ResetColor();
-
             return expectedReturnDate.ToString("yyyy-MM-dd");
         }
 
@@ -459,11 +447,8 @@ public class SocialScienceBookReservation : BookReservation
         if (DateTime.TryParseExact(returnDuration, "yyyy-MM-dd", null, DateTimeStyles.None, out var returnDate))
         {
             var expectedReturnDate = returnDate.AddDays(31);
-            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine($"Expected return day: {expectedReturnDate:yyyy-MM-dd}.");
-            Console.ResetColor();
             return expectedReturnDate.ToString("yyyy-MM-dd");
-
         }
 
         throw new ArgumentException("Invalid date format for return duration. Please enter the date in yyyy-MM-dd format.");
@@ -480,10 +465,7 @@ public class ReligionBookReservation : BookReservation
         if (DateTime.TryParseExact(returnDuration, "yyyy-MM-dd", null, DateTimeStyles.None, out var returnDate))
         {
             var expectedReturnDate = returnDate.AddDays(31);
-            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine($"Expected return day: {expectedReturnDate:yyyy-MM-dd}.");
-            Console.ResetColor();
-
             return expectedReturnDate.ToString("yyyy-MM-dd");
         }
 
@@ -496,7 +478,7 @@ public class Opening
 
     public string TextArt { get; } = "=========================================================================================================================================================================";
 
-    public string TextArtTitle { get; } = @"     
+    public string TextArtTitle { get; } = @"         
  __        ___       __   ___    ___            ___         __        __     ___          ___     __   ___       ___  __  ___         __              __   __   __       
 |__) |    |__   /\  /__` |__      |   /\  |__/ |__     \ / /  \ |  | |__)     |  |  |\/| |__     /__` |__  |    |__  /  `  |  | |\ | / _`     /\     |__) /  \ /  \ |__/ 
 |    |___ |___ /~~\ .__/ |___     |  /~~\ |  \ |___     |  \__/ \__/ |  \     |  |  |  | |___    .__/ |___ |___ |___ \__,  |  | | \| \__>    /~~\    |__) \__/ \__/ |  \ 
@@ -514,13 +496,12 @@ public class openopen
 
     public string Middle { get; } = @"
 
+   
  __        __   _                            ____  _             _            _       
  \ \      / /__| | ___ ___  _ __ ___   ___  / ___|| |_ _   _  __| | ___ _ __ | |_ ___ 
   \ \ /\ / / _ \ |/ __/ _ \| '_ ` _ \ / _ \ \___ \| __| | | |/ _` |/ _ \ '_ \| __/ __|
    \ V  V /  __/ | (_| (_) | | | | | |  __/  ___) | |_| |_| | (_| |  __/ | | | |_\__ \
     \_/\_/ \___|_|\___\___/|_| |_| |_|\___| |____/ \__|\__,_|\__,_|\___|_| |_|\__|___/
-                                                                                       
- 
                                                                                                             
  ";
     public string Bottom { get; } = "============================================================================================================================";
@@ -528,17 +509,152 @@ public class openopen
 
 public class Program
 {
-
     private static int categoryNumber;
     private static bool continueProgram = true;
     private const string FilePath = "FINALSPORJ.txt";
 
+    static void DisplaySavedData(string userId)
+    {
+        try
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.DarkMagenta;
+
+            Console.WriteLine("6. Display Saved Data");
+            Console.WriteLine("-----------------------------------");
+
+            string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            DirectoryInfo directoryInfo = new DirectoryInfo(documentsPath);
+            FileInfo[] files = directoryInfo.GetFiles($"{userId}.txt");
+
+            if (files.Length == 0)
+            {
+                Console.WriteLine("No saved data found.");
+                return;
+            }
+
+            int fileNumber = 1;
+            foreach (FileInfo file in files)
+            {
+                Console.WriteLine($"{fileNumber}. {file.Name}");
+                fileNumber++;
+            }
+
+            Console.WriteLine("Enter the number of the file you want to view details (0 to cancel): ");
+            string userInput = Console.ReadLine();
+
+            if (int.TryParse(userInput, out int selectedFileNumber) && selectedFileNumber > 0 && selectedFileNumber <= files.Length)
+            {
+                string selectedFilePath = Path.Combine(documentsPath, files[selectedFileNumber - 1].Name);
+                DisplayFileDetails(selectedFilePath);
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Returning to the main menu.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error during displaying saved data: {ex.Message}");
+        }
+    }
+
+    static void DeleteSavedData(string userId)
+    {
+        try
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+
+            Console.WriteLine("7. Delete Saved Data");
+            Console.WriteLine("-----------------------------------");
+
+            string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            DirectoryInfo directoryInfo = new DirectoryInfo(documentsPath);
+            FileInfo[] files = directoryInfo.GetFiles($"{userId}.txt");
+
+            if (files.Length == 0)
+            {
+                Console.WriteLine("No saved data found.");
+                return;
+            }
+
+            int fileNumber = 1;
+            foreach (FileInfo file in files)
+            {
+                Console.WriteLine($"{fileNumber}. {file.Name}");
+                fileNumber++;
+            }
+
+            Console.WriteLine("Enter the number of the file you want to delete (0 to cancel): ");
+            string userInput = Console.ReadLine();
+
+            if (int.TryParse(userInput, out int selectedFileNumber) && selectedFileNumber > 0 && selectedFileNumber <= files.Length)
+            {
+                string selectedFilePath = Path.Combine(documentsPath, files[selectedFileNumber - 1].Name);
+                DeleteFile(selectedFilePath);
+                Console.WriteLine("File deleted successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Returning to the main menu.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error during deleting saved data: {ex.Message}");
+        }
+    }
+
+    static void DisplayFileDetails(string filePath)
+    {
+        try
+        {
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                Console.WriteLine("-----------------------------------");
+                Console.WriteLine("File Details:");
+                Console.WriteLine("-----------------------------------");
+
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    Console.WriteLine(line);
+                }
+
+                Console.WriteLine("-----------------------------------");
+                Console.WriteLine("Enter '0' to go back: ");
+                string userInput = Console.ReadLine();
+
+                if (userInput == "0")
+                {
+                    return;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error during displaying file details: {ex.Message}");
+        }
+    }
+
+    static void DeleteFile(string filePath)
+    {
+        try
+        {
+            File.Delete(filePath);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error during deleting file: {ex.Message}");
+        }
+    }
     static void SaveToFile(string category, string selectedBook, string dateToGetBook, string expectedReturnDate, string authenticationCode, string userId, string First)
     {
         try
         {
             string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            string filePath = Path.Combine(documentsPath, "FINALSPROJ.txt");
+            string filePath = Path.Combine(documentsPath, $"{userId}.txt");
 
             using (StreamWriter writer = new StreamWriter(filePath, true))
             {
@@ -552,10 +668,8 @@ public class Program
                 writer.WriteLine($"●Expected return day: {expectedReturnDate}                       ");
                 writer.WriteLine($"●Authentication Code: {authenticationCode}                       ");
                 writer.WriteLine("------------------------------------------------------------------");
-                writer.WriteLine("");           
+                writer.WriteLine("");
             }
-
-
         }
         catch (Exception)
         {
@@ -586,7 +700,6 @@ public class Program
             "15. Library is open to 8:00 A.M. TO 6:00 P.M. .",
             "16. library is not open on Weekends.",
             "17. Students must return books during library operating hours."
-
         };
 
         foreach (var condition in termsAndConditions)
@@ -621,7 +734,6 @@ public class Program
         return "aaaa";
     }
 
-
     static void Main(string[] args)
     {
         List<string> userInputs = new List<string>();
@@ -630,11 +742,13 @@ public class Program
         string authenticationCode = GenerateAuthenticationCode();
         DateTime expectedReturnDate = DateTime.MinValue;
 
+
+
         var englishBookCategory = new English();
         var mathBookCategory = new Math();
         var scienceBookCategory = new Science();
-        var socialscienceBookCategory = new SocialScience();
         var ReligionBookCategory = new Religion();
+        var SocialScienceBookCategory = new SocialScience();
         int bookNumber = 0;
 
         Console.Clear();
@@ -674,7 +788,6 @@ public class Program
         }
         Console.WriteLine(DisplaySplitTransition(First));
 
-
         while (continueProgram)
         {
             Console.Clear();
@@ -695,12 +808,12 @@ public class Program
             Console.WriteLine(new string('=', 40) + "=" + new string('=', 27));
 
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("Select Category:\n1. English\n2. Math\n3. Science\n4. Social Science\n5. Religion \n6. Exit");
+            Console.WriteLine("Select Category:\n1. English\n2. Math\n3. Science\n4. Social Science\n5. Religion \n6. Display Saved Data\n7. Delete Saved Data\n8. Exit");
 
             Console.Write("Enter a number: ");
             var input = Console.ReadLine();
 
-            if (input == "6")
+            if (input == "7 ")
             {
                 Console.Write("Do you want to exit? (yes/no): ");
                 string exitChoice = Console.ReadLine().ToLower();
@@ -735,16 +848,57 @@ public class Program
                         selectedCategory = scienceBookCategory;
                         break;
                     case 4:
-                        selectedCategory = socialscienceBookCategory;
+                        selectedCategory = SocialScienceBookCategory;
                         break;
                     case 5:
                         selectedCategory = ReligionBookCategory;
                         break;
-                    case 11:
+
+                    case 6:
+                        DisplaySavedData(userId);
+                        Console.Write("Enter 6 again to go back: ");
+                        input = Console.ReadLine();
+                        if (input == "6")
+                        {
+                            // Go back to the book category
+                            continue;
+                        }
                         break;
+                    case 7:
+                        DeleteSavedData(userId);
+                        Console.Write("Enter 7 again to go back: ");
+                        input = Console.ReadLine();
+                        if (input == "7")
+                        {
+                            // Go back to the book category
+                            continue;
+                        }
+                            break;
+                    case 8:
+                        Console.Write("Do you want to exit? (yes/no): ");
+                        string exitChoice = Console.ReadLine().ToLower();
+
+                        if (exitChoice == "yes")
+                        {
+                            Console.WriteLine("Exiting the program...");
+                            return;
+                        }
+                        else if (exitChoice == "no")
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid choice. Returning to category selection.");
+                            continue;
+                        }
                     default:
                         Console.WriteLine("Invalid category number. Please try again.");
                         continue;
+
+                    case 11:
+                        break;
+
                 }
 
                 do
